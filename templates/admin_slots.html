@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block body %}<h3>All examination slots</h3>
+<table class="table table-striped bg-white"><tr><th>ID</th><th>Exam</th><th>Examiner</th><th>Date</th><th>Time</th><th>Seats</th><th>Status</th><th></th></tr>
+{% for s in slots %}<tr><td>{{ s.id }}</td><td>{{ s.code }} · {{ s.exam }}</td><td>{{ s.examiner }}</td><td>{{ s.date }}</td><td>{{ s.start }}–{{ s.end }}</td><td>{{ s.available }}/{{ s.capacity }}</td><td>{{ s.status }}</td>
+<td><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.slot_examiner',sid=s.id) }}">Change examiner</a></td></tr>{% endfor %}</table>{% endblock %}

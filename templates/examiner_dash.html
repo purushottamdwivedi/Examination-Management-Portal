@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block body %}<h3>Examiner Dashboard</h3>
+<div class="row g-3 mb-3"><div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ exams|length }}</div>Assigned exams</div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ slots|length }}</div>My slots</div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ booked }}</div>Students booked</div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ pending|length }}</div>Pending evaluations</div></div></div></div>
+<div class="card mb-3"><div class="card-header">Assigned examinations</div><table class="table mb-0"><tr><th>Exam</th><th>Type</th><th>Slot creation</th><th>Status</th><th></th></tr>
+{% for e in exams %}<tr><td>{{ e.code }} · {{ e.name }}</td><td>{{ e.type }}</td><td class="small">{{ e.sc_start }} → {{ e.sc_end }}</td><td>{{ e.status }}</td>
+<td>{% if e.status=='Slot Creation' and e.sc_start<=today<=e.sc_end %}<a class="btn btn-sm btn-primary" href="{{ url_for('examiner.slot_new',eid=e.id) }}">Create slot</a>{% endif %}</td></tr>{% else %}<tr><td colspan="5" class="text-muted">Nothing assigned yet</td></tr>{% endfor %}</table></div>
+<div class="card mb-3"><div class="card-header">My slots</div><table class="table mb-0"><tr><th>Exam</th><th>Date</th><th>Time</th><th>Seats</th><th>Status</th><th></th></tr>
+{% for s in slots %}<tr><td>{{ s.exam }}</td><td>{{ s.date }}</td><td>{{ s.start }}–{{ s.end }}</td><td>{{ s.available }}/{{ s.capacity }}</td><td>{{ s.status }}</td><td class="text-nowrap">
+<a class="btn btn-sm btn-outline-dark" href="{{ url_for('examiner.slot_students',sid=s.id) }}">Students</a>
+{% if s.estatus=='Slot Creation' %}<a class="btn btn-sm btn-outline-primary" href="{{ url_for('examiner.slot_edit',sid=s.id) }}">Edit</a>
+<form class="d-inline" method="post" action="{{ url_for('examiner.slot_delete',sid=s.id) }}"><button class="btn btn-sm btn-outline-danger">Remove</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="6" class="text-muted">No slots</td></tr>{% endfor %}</table></div>
+<div class="card"><div class="card-header">Pending evaluations</div><ul class="list-group list-group-flush">
+{% for b in pending %}<li class="list-group-item d-flex justify-content-between">{{ b.student }} · {{ b.exam }} · {{ b.date }} {{ b.start }}<a class="btn btn-sm btn-success" href="{{ url_for('examiner.evaluate',bid=b.id) }}">Evaluate</a></li>{% else %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul></div>{% endblock %}

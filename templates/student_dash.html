@@ -1,0 +1,11 @@
+{% extends 'base.html' %}{% block body %}<h3>Student Dashboard</h3>
+<div class="row g-3 mb-3"><div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ open_exams }}</div>Available exams</div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ open_slots }}</div>Available slots</div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ upcoming|length }}</div>Upcoming / booked</div></div></div>
+<div class="col-md-3"><div class="card text-center"><div class="card-body"><div class="fs-2">{{ results|length }}</div>Published results</div></div></div></div>
+<a class="btn btn-primary mb-3" href="{{ url_for('student.student_exams') }}">Browse &amp; book examinations</a>
+<div class="card mb-3"><div class="card-header">Upcoming examinations</div><ul class="list-group list-group-flush">
+{% for b in upcoming %}<li class="list-group-item d-flex justify-content-between">{{ b.code }} · {{ b.exam }} — {{ b.date }} {{ b.start }}–{{ b.end }} (Examiner: {{ b.examiner }})
+<form method="post" action="{{ url_for('student.cancel',bid=b.id) }}" onsubmit="return confirm('Cancel booking?')"><button class="btn btn-sm btn-outline-danger">Cancel</button></form></li>{% else %}<li class="list-group-item text-muted">No upcoming bookings</li>{% endfor %}</ul></div>
+<div class="card"><div class="card-header">Published results</div><ul class="list-group list-group-flush">
+{% for r in results %}<li class="list-group-item"><b>{{ r.exam }}</b>: {{ r.total }} marks<br><small>Remarks: {{ r.remarks or '–' }}</small></li>{% else %}<li class="list-group-item text-muted">No results published yet</li>{% endfor %}</ul></div>{% endblock %}

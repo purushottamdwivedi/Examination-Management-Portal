@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block body %}<h3>Search: "{{ t }}"</h3>
+<h5>Students</h5><ul>{% for s in students %}<li>#{{ s.id }} {{ s.name }} – {{ s.email }} ({{ s.status }})</li>{% else %}<li class="text-muted">none</li>{% endfor %}</ul>
+<h5>Examiners</h5><ul>{% for s in examiners %}<li>#{{ s.id }} {{ s.name }} – {{ s.department }} ({{ s.status }})</li>{% else %}<li class="text-muted">none</li>{% endfor %}</ul>
+<h5>Examinations</h5><ul>{% for e in exams %}<li>#{{ e.id }} <a href="{{ url_for('admin.exam_detail',eid=e.id) }}">{{ e.name }}</a> ({{ e.code }}, {{ e.status }})</li>{% else %}<li class="text-muted">none</li>{% endfor %}</ul>
+<h5>Bookings</h5>{% set rows = bookings %}{% include 'booking_table.html' %}{% endblock %}

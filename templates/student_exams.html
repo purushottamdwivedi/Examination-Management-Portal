@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block body %}<h3>Examinations</h3>
+<form class="row g-2 mb-3"><div class="col-md-4"><input name="q" class="form-control" placeholder="Search name / course" value="{{ t }}"></div>
+<div class="col-md-2"><select name="type" class="form-select"><option value="">All types</option>{% for x in EXAM_TYPES %}<option {{ 'selected' if ty==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div class="col-md-3"><select name="status" class="form-select"><option value="">All statuses</option>{% for x in EXAM_STATUS[1:] %}<option {{ 'selected' if st==x }}>{{ x }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><button class="btn btn-primary">Filter</button></div></form>
+{% for e in exams %}<div class="card mb-3"><div class="card-body"><h5>{{ e.name }} <small class="text-muted">{{ e.code }} – {{ e.cname }}</small></h5>
+<p class="mb-2 small">{{ e.type }} · {{ e.duration }} min · {{ e.max_marks }} marks · Booking {{ e.bk_start }} → {{ e.bk_end }} · <b>{{ e.status }}</b></p>
+{% if e.id in booked %}<span class="badge bg-success mb-2">You have booked this examination</span>{% endif %}
+<table class="table table-sm mb-0"><tr><th>Date</th><th>Time</th><th>Examiner</th><th>Seats</th><th></th></tr>
+{% for s in slots[e.id] %}<tr><td>{{ s.date }}</td><td>{{ s.start }}–{{ s.end }}</td><td>{{ s.examiner }}</td><td>{{ s.available }}/{{ s.capacity }}</td>
+<td>{% if e.status=='Booking Open' and s.status=='Available' and e.id not in booked %}<form method="post" action="{{ url_for('student.book',sid=s.id) }}"><button class="btn btn-sm btn-success">Book</button></form>{% else %}<span class="text-muted small">{{ s.status }}</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="5" class="text-muted">No slots yet</td></tr>{% endfor %}</table></div></div>
+{% else %}<p class="text-muted">No examinations match.</p>{% endfor %}{% endblock %}

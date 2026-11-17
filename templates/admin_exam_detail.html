@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block body %}<h3>{{ e.name }} <small class="text-muted">{{ e.code }} · {{ e.type }} · {{ e.max_marks }} marks · {{ e.status }}</small></h3>
+<div class="row"><div class="col-md-6"><div class="card mb-3"><div class="card-header">Rubrics (total weightage {{ total_w }})</div>
+<table class="table table-sm mb-0"><tr><th>Criterion</th><th>Max</th><th>Weight</th><th></th></tr>
+{% for r in rubrics %}<tr><form method="post" action="{{ url_for('admin.rubric_act',rid=r.id,act='edit') }}"><td><input name="name" class="form-control form-control-sm" value="{{ r.name }}"><input name="description" class="form-control form-control-sm mt-1" value="{{ r.description or '' }}" placeholder="Description"></td>
+<td><input name="max_marks" type="number" step="any" class="form-control form-control-sm" value="{{ r.max_marks }}"></td><td><input name="weight" type="number" step="any" class="form-control form-control-sm" value="{{ r.weight }}"></td>
+<td class="text-nowrap"><button class="btn btn-sm btn-outline-primary">Save</button></form>
+<form class="d-inline" method="post" action="{{ url_for('admin.rubric_act',rid=r.id,act='delete') }}"><button class="btn btn-sm btn-outline-danger">×</button></form></td></tr>{% else %}<tr><td colspan="4" class="text-muted">No rubrics</td></tr>{% endfor %}</table>
+<form method="post" action="{{ url_for('admin.rubric_add',eid=e.id) }}" class="card-body row g-2 border-top">
+<div class="col-5"><input name="name" class="form-control form-control-sm" placeholder="Criterion" required></div>
+<div class="col-3"><input name="max_marks" type="number" step="any" min="0.1" class="form-control form-control-sm" placeholder="Max" required></div>
+<div class="col-4"><input name="weight" type="number" step="any" min="0.1" class="form-control form-control-sm" placeholder="Weight %" required></div>
+<div class="col-9"><input name="description" class="form-control form-control-sm" placeholder="Description"></div><div class="col-3"><button class="btn btn-sm btn-primary w-100">Add</button></div></form></div></div>
+<div class="col-md-6"><div class="card mb-3"><div class="card-header">Assigned examiners</div><ul class="list-group list-group-flush">
+{% for a in assigned %}<li class="list-group-item d-flex justify-content-between">{{ a.name }} <form method="post" action="{{ url_for('admin.exam_assign',eid=e.id) }}"><input type="hidden" name="remove" value="{{ a.id }}"><button class="btn btn-sm btn-outline-danger">Remove</button></form></li>{% else %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul>
+<form method="post" action="{{ url_for('admin.exam_assign',eid=e.id) }}" class="card-body d-flex"><select name="examiner_id" class="form-select form-select-sm" required>{% for a in available %}<option value="{{ a.id }}">{{ a.name }} ({{ a.department }})</option>{% endfor %}</select><button class="btn btn-sm btn-primary ms-2">Assign</button></form></div></div></div>
+<div class="card"><div class="card-header">Slots</div><table class="table table-sm mb-0"><tr><th>ID</th><th>Examiner</th><th>Date</th><th>Time</th><th>Seats</th><th>Status</th></tr>
+{% for s in slots %}<tr><td>{{ s.id }}</td><td>{{ s.ex_name }}</td><td>{{ s.date }}</td><td>{{ s.start }}–{{ s.end }}</td><td>{{ s.available }}/{{ s.capacity }}</td><td>{{ s.status }}</td></tr>{% else %}<tr><td colspan="6" class="text-muted">No slots</td></tr>{% endfor %}</table></div>{% endblock %}

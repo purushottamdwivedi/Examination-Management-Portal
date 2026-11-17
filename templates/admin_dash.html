@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block body %}<h3>Admin Dashboard</h3>
+<div class="row g-3 my-2">{% for k, v in stats.items() %}<div class="col-6 col-md-2"><div class="card text-center shadow-sm"><div class="card-body"><div class="fs-2 fw-bold">{{ v }}</div><div class="text-muted">{{ k }}</div></div></div></div>{% endfor %}</div>
+<div class="row"><div class="col-md-6"><div class="card mb-3"><div class="card-header">Pending examiner approvals</div><ul class="list-group list-group-flush">
+{% for p in pending %}<li class="list-group-item d-flex justify-content-between align-items-center">{{ p.name }} <small>{{ p.department }}</small>
+<form method="post" action="{{ url_for('admin.user_status',uid=p.id) }}"><input type="hidden" name="status" value="approved"><button class="btn btn-sm btn-success">Approve</button></form></li>
+{% else %}<li class="list-group-item text-muted">None</li>{% endfor %}</ul></div></div>
+<div class="col-md-6"><div class="card"><div class="card-header">Bookings per examination</div><div class="card-body">
+{% set mx = (trend|map(attribute='n')|max) or 1 %}
+{% for t in trend %}<div class="small">{{ t.name }} ({{ t.n }})</div><div class="progress mb-2"><div class="progress-bar" style="width: {{ (t.n/mx*100)|round }}%"></div></div>{% else %}<span class="text-muted">No data</span>{% endfor %}
+</div></div></div></div>{% endblock %}

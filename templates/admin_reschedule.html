@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block body %}<h3>Reschedule booking #{{ b.id }}</h3><p>{{ b.student }} · {{ b.exam }} · now {{ b.date }} {{ b.start }}–{{ b.end }}</p>
+<form method="post" class="col-md-6"><select name="slot_id" class="form-select mb-3" required>{% for s in slots %}<option value="{{ s.id }}">{{ s.date }} {{ s.start }}–{{ s.end }} · {{ s.examiner }} ({{ s.available }} seats)</option>{% else %}<option value="">No other slots available</option>{% endfor %}</select>
+<button class="btn btn-primary" {{ 'disabled' if not slots }}>Move booking</button> <a class="btn btn-link" href="{{ url_for('admin.admin_bookings') }}">Cancel</a></form>{% endblock %}

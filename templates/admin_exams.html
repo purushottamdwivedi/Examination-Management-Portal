@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block body %}<h3>Examinations</h3>
+<div class="card mb-4"><div class="card-header">{{ 'Edit' if edit else 'New' }} examination</div><div class="card-body"><form method="post" class="row g-2">
+<div class="col-md-3"><label class="form-label small">Course</label><select name="course_id" class="form-select" required>{% for c in courses %}<option value="{{ c.id }}" {{ 'selected' if edit and edit.course_id==c.id }}>{{ c.code }} – {{ c.name }}</option>{% endfor %}</select></div>
+<div class="col-md-3"><label class="form-label small">Name</label><input name="name" class="form-control" value="{{ edit.name if edit }}" required></div>
+<div class="col-md-2"><label class="form-label small">Type</label><select name="type" class="form-select">{% for t in EXAM_TYPES %}<option {{ 'selected' if edit and edit.type==t }}>{{ t }}</option>{% endfor %}</select></div>
+<div class="col-md-2"><label class="form-label small">Duration (min)</label><input type="number" min="1" name="duration" class="form-control" value="{{ edit.duration if edit }}" required></div>
+<div class="col-md-2"><label class="form-label small">Max marks</label><input type="number" min="1" name="max_marks" class="form-control" value="{{ edit.max_marks if edit }}" required></div>
+<div class="col-md-3"><label class="form-label small">Slot creation start</label><input type="date" name="sc_start" class="form-control" value="{{ edit.sc_start if edit }}" required></div>
+<div class="col-md-3"><label class="form-label small">Slot creation end</label><input type="date" name="sc_end" class="form-control" value="{{ edit.sc_end if edit }}" required></div>
+<div class="col-md-3"><label class="form-label small">Booking start</label><input type="date" name="bk_start" class="form-control" value="{{ edit.bk_start if edit }}" required></div>
+<div class="col-md-3"><label class="form-label small">Booking end (cancel deadline)</label><input type="date" name="bk_end" class="form-control" value="{{ edit.bk_end if edit }}" required></div>
+<div class="col-md-4"><label class="form-label small">Venue</label><input name="venue" class="form-control" value="{{ edit.venue or '' if edit }}"></div>
+<div class="col-md-2 d-flex align-items-end"><button class="btn btn-primary">{{ 'Update' if edit else 'Create' }}</button></div></form></div></div>
+{% if not edit %}<div class="table-responsive"><table class="table table-striped bg-white align-middle"><tr><th>ID</th><th>Examination</th><th>Course</th><th>Type</th><th>Marks</th><th>Slot creation</th><th>Booking</th><th>Status</th><th>Results</th><th></th></tr>
+{% for e in exams %}<tr><td>{{ e.id }}</td><td><a href="{{ url_for('admin.exam_detail',eid=e.id) }}">{{ e.name }}</a></td><td>{{ e.code }}</td><td>{{ e.type }}</td><td>{{ e.max_marks }}</td>
+<td class="small">{{ e.sc_start }} → {{ e.sc_end }}</td><td class="small">{{ e.bk_start }} → {{ e.bk_end }}</td>
+<td><form method="post" action="{{ url_for('admin.exam_status',eid=e.id) }}" class="d-flex"><select name="status" class="form-select form-select-sm">{% for s in EXAM_STATUS %}<option {{ 'selected' if e.status==s }}>{{ s }}</option>{% endfor %}</select><button class="btn btn-sm btn-outline-dark ms-1">Set</button></form></td>
+<td><form method="post" action="{{ url_for('admin.exam_publish',eid=e.id) }}"><input type="hidden" name="v" value="{{ 0 if e.published else 1 }}"><button class="btn btn-sm btn-outline-{{ 'secondary' if e.published else 'success' }}">{{ 'Unpublish' if e.published else 'Publish' }}</button></form></td>
+<td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.exam_edit',eid=e.id) }}">Edit</a>
+<form class="d-inline" method="post" action="{{ url_for('admin.exam_delete',eid=e.id) }}" onsubmit="return confirm('Delete?')"><button class="btn btn-sm btn-outline-danger">Del</button></form></td></tr>{% endfor %}</table></div>{% endif %}{% endblock %}

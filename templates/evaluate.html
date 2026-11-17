@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% block body %}<h3>Evaluate {{ b.student }}</h3><p>{{ e.name }} · max {{ e.max_marks }} marks</p>
+<form method="post" class="col-md-7">
+{% for r in rubrics %}<div class="mb-3"><label class="form-label">{{ r.name }} <small class="text-muted">(max {{ r.max_marks }}, weight {{ r.weight }}) {{ r.description }}</small></label>
+<input type="number" step="any" min="0" max="{{ r.max_marks }}" name="m{{ r.id }}" class="form-control" value="{{ old.get(r.id,'') }}" required></div>
+{% else %}<div class="mb-3"><label class="form-label">Total marks (no rubric defined)</label><input type="number" step="any" min="0" max="{{ e.max_marks }}" name="total" class="form-control" value="{{ res.total if res }}" required></div>{% endfor %}
+<div class="mb-3"><label class="form-label">Remarks</label><textarea name="remarks" rows="3" class="form-control">{{ res.remarks if res }}</textarea></div>
+<button class="btn btn-primary">Submit</button> <a class="btn btn-link" href="{{ url_for('examiner.slot_students',sid=b.slot_id) }}">Back</a></form>{% endblock %}

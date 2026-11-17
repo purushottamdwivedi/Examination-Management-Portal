@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block body %}<h3>{{ role|capitalize }}s</h3>
+<table class="table table-striped bg-white"><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Dept</th>{% if role=='student' %}<th>Roll</th>{% endif %}<th>Status</th><th></th></tr>
+{% for r in rows %}<tr><td>{{ r.id }}</td><td>{{ r.name }}</td><td>{{ r.email }}</td><td>{{ r.phone }}</td><td>{{ r.department }}</td>{% if role=='student' %}<td>{{ r.student_no }}</td>{% endif %}<td>{{ r.status }}</td>
+<td class="text-nowrap">{% if r.status!='approved' %}<form class="d-inline" method="post" action="{{ url_for('admin.user_status',uid=r.id) }}"><input type="hidden" name="status" value="approved"><button class="btn btn-sm btn-success">Approve</button></form>{% endif %}
+{% if r.status!='inactive' %}<form class="d-inline" method="post" action="{{ url_for('admin.user_status',uid=r.id) }}"><input type="hidden" name="status" value="inactive"><button class="btn btn-sm btn-outline-danger">Deactivate</button></form>{% endif %}</td></tr>{% endfor %}</table>{% endblock %}

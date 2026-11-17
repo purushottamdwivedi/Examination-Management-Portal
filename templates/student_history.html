@@ -1,0 +1,5 @@
+{% extends 'base.html' %}{% block body %}<h3>My bookings &amp; examination history</h3>
+<table class="table table-striped bg-white"><tr><th>ID</th><th>Exam</th><th>Date</th><th>Time</th><th>Examiner</th><th>Booked on</th><th>Status</th><th>Result / feedback</th><th></th></tr>
+{% for b in rows %}<tr><td>{{ b.id }}</td><td>{{ b.code }} · {{ b.exam }}</td><td>{{ b.date }}</td><td>{{ b.start }}–{{ b.end }}</td><td>{{ b.examiner }}</td><td class="small">{{ b.booked_on }}</td><td>{{ b.status }}</td>
+<td>{% if b.id in fb %}<b>{{ fb[b.id].total }}/{{ exams[b.exam_id].max_marks }}</b><br><small>{{ fb[b.id].remarks }}</small>{% else %}–{% endif %}</td>
+<td>{% if b.status=='Booked' %}<form method="post" action="{{ url_for('student.cancel',bid=b.id) }}" onsubmit="return confirm('Cancel booking?')"><button class="btn btn-sm btn-outline-danger">Cancel</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="9" class="text-muted">No bookings yet</td></tr>{% endfor %}</table>{% endblock %}

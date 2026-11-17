@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block body %}<h3>Change examiner – slot #{{ s.id }}</h3><p>{{ s.exam }} · {{ s.date }} {{ s.start }}–{{ s.end }} · current: <b>{{ s.examiner }}</b></p>
+<form method="post" class="col-md-5"><select name="examiner_id" class="form-select mb-3">{% for x in examiners %}<option value="{{ x.id }}" {{ 'selected' if x.id==s.examiner_id }}>{{ x.name }}</option>{% endfor %}</select><button class="btn btn-primary">Reassign</button> <a class="btn btn-link" href="{{ url_for('admin.admin_slots') }}">Cancel</a></form>
+<p class="text-muted small mt-2">Only examiners assigned to this examination are listed.</p>{% endblock %}
